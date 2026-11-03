@@ -834,7 +834,11 @@ button.ghost, .btn.ghost { background: transparent; color: var(--gold); }
       var txt = "Кто ты в Бацзы? Введи дату рождения и узнай: " + shareUrl;
       var ok = function () { sm.textContent = "Ссылка скопирована. Отправь её подруге в любой мессенджер."; };
       var fail = function () { sm.textContent = "Скопируй и отправь подруге: " + shareUrl; };
-      try { navigator.clipboard.writeText(txt).then(ok, fail); } catch (e) { fail(); }
+      var copy = function () { try { navigator.clipboard.writeText(txt).then(ok, fail); } catch (e) { fail(); } };
+      if (navigator.share) {
+        navigator.share({ title: "Кто ты в Бацзы", text: "Кто ты в Бацзы? Введи дату рождения и узнай:", url: shareUrl })
+          .then(function () { sm.textContent = "Спасибо, что поделилась!"; }, function (e) { if (!e || e.name !== "AbortError") copy(); });
+      } else { copy(); }
     });
     a2.appendChild(sb); sh.appendChild(a2); sh.appendChild(sm);
     out.appendChild(sh);
