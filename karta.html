@@ -921,11 +921,39 @@ button.ghost, .btn.ghost { background: transparent; color: var(--gold); }
     dob.value = s; err.textContent = "";
     var r = parse(s); echo.textContent = r && !r.bad ? r.d + " " + MONTHS_GEN[r.m - 1] + " " + r.y : "";
   });
+  /* Статистика: открытия и расчёты пишутся в Google-таблицу «Калькулятор Бацзы: статистика». */
+  var STAT_URL = "https://script.google.com/macros/s/AKfycbzuUReQjegy7EI1pl1ztFv9AcF0_l0KsonTQ2fA4VzDk0KYpbLUe-XTAMlF3_eCzyrJRA/exec", CALC_NAME = "Instagram (karta)";
+  function statVid() { try { var v = localStorage.getItem("bz_vid"); if (!v) { v = Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4); localStorage.setItem("bz_vid", v); } return v; } catch (e) { return ""; } }
+  function statSrc() {
+    var q = /[?&#](?:src|from)=([a-z]+)/i.exec(location.search + location.hash);
+    if (q) return ({ ig: "Instagram", tg: "Telegram", site: "Сайт" })[q[1].toLowerCase()] || q[1];
+    var ua = navigator.userAgent || "";
+    if (/Instagram/i.test(ua)) return "Instagram";
+    if (/Telegram/i.test(ua) || (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData)) return "Telegram";
+    try { if (document.referrer) { var h = new URL(document.referrer).hostname.replace(/^www\./, ""); if (h && h !== location.hostname) return h; } } catch (e) {}
+    return "напрямую";
+  }
+  var STAT_SRC = statSrc(), statLast = "", statSample = false;
+  function track(ev, o) {
+    if (!STAT_URL) return;
+    o = o || {}; o.ev = ev; o.calc = CALC_NAME; o.src = STAT_SRC; o.vid = statVid();
+    var b = JSON.stringify(o);
+    try { if (navigator.sendBeacon && navigator.sendBeacon(STAT_URL, new Blob([b], { type: "text/plain;charset=utf-8" }))) return; } catch (e) {}
+    try { fetch(STAT_URL, { method: "POST", mode: "no-cors", body: b, keepalive: true }); } catch (e) {}
+  }
+  function trackCalc(r) {
+    var key = r.d + "." + r.m + "." + r.y + GENDER; if (key === statLast) return; statLast = key;
+    var p = dayPillar(r.y, r.m, r.d), st = STEM[p.stem];
+    track("рассчитал", { dob: ("0" + r.d).slice(-2) + "." + ("0" + r.m).slice(-2) + "." + r.y, card: GENDER === "m" ? "Мужская" : "Женская", type: st.name + " " + p.stem, pillar: p.stem + p.branch, sample: statSample });
+    statSample = false;
+  }
+  track("открыл");
+
   function go() {
     err.textContent = ""; var r = parse(dob.value);
     if (!r) { err.textContent = "Введи дату цифрами: например, 15011974."; return; }
     if (r.bad) { err.textContent = r.bad; return; }
-    last = r; render(r.y, r.m, r.d);
+    last = r; render(r.y, r.m, r.d); try { trackCalc(r); } catch (e) {}
   }
   var late = document.getElementById("late"), sexBtns = document.querySelectorAll(".sex button"), last = null;
   function setGender(g) {
@@ -940,7 +968,7 @@ button.ghost, .btn.ghost { background: transparent; color: var(--gold); }
   /* Кнопка считает и там, где отправка форм запрещена (превью в мессенджерах и чатах). */
   document.querySelector("#f button[type=submit]").addEventListener("click", function (e) { e.preventDefault(); go(); });
   dob.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); go(); } });
-  document.getElementById("sample").addEventListener("click", function () { dob.value = "17.01.1985"; dob.dispatchEvent(new Event("input")); go(); });
+  document.getElementById("sample").addEventListener("click", function () { statSample = true; dob.value = "17.01.1985"; dob.dispatchEvent(new Event("input")); go(); });
 })();
 </script>
 
