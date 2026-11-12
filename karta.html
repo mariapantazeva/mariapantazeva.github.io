@@ -111,6 +111,7 @@ button.ghost, .btn.ghost { background: transparent; color: var(--gold); }
 .sexnote { margin: 0 0 18px; text-align: center; }
 .sex button { flex: 1; margin: 0; background: transparent; color: var(--muted); border: 1px solid var(--line); font-weight: 500; white-space: nowrap; letter-spacing: .08em; padding-left: 6px; padding-right: 6px; }
 .sex button[aria-checked="true"] { background: var(--gold); color: #1a120c; border-color: var(--gold); }
+.actions button.done { border-color: var(--gold); color: var(--gold); }
 </style>
 
 <div class="bg" id="bgA"></div><div class="bg" id="bgB"></div><div class="veil"></div>
@@ -887,14 +888,19 @@ button.ghost, .btn.ghost { background: transparent; color: var(--gold); }
     var shareUrl = "https://mariapantazeva.github.io/karta.html", sb = el("button", "ghost", "Поделиться с {подругой|другом}"); sb.type = "button";
     var sm = el("p", "note"); sm.style.textAlign = "center";
     sb.addEventListener("click", function () {
-      var txt = "Кто ты в Бацзы? Введи дату рождения и узнай: " + shareUrl;
-      var ok = function () { sm.textContent = gx("Ссылка скопирована. Отправь её {подруге|другу} в любой мессенджер."); };
-      var fail = function () { sm.textContent = gx("Скопируй и отправь {подруге|другу}: ") + shareUrl; };
-      var copy = function () { try { navigator.clipboard.writeText(txt).then(ok, fail); } catch (e) { fail(); } };
-      if (navigator.share) {
-        navigator.share({ title: "Кто ты в Бацзы", text: "Кто ты в Бацзы? Введи дату рождения и узнай:", url: shareUrl })
-          .then(function () { sm.textContent = gx("Спасибо, что {поделилась|поделился}!"); }, function (e) { if (!e || e.name !== "AbortError") copy(); });
-      } else { copy(); }
+      var txt = "Кто ты в Бацзы? Введи дату рождения и узнай: " + shareUrl, label = gx("Поделиться с {подругой|другом}");
+      /* Копируем сразу и показываем это на самой кнопке: во встроенном браузере Instagram меню «Поделиться» часто не открывается. */
+      var copied = false;
+      try { var ta = document.createElement("textarea"); ta.value = txt; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.opacity = "0"; document.body.appendChild(ta); ta.select(); ta.setSelectionRange(0, txt.length); copied = document.execCommand("copy"); document.body.removeChild(ta); } catch (e) {}
+      if (!copied) { try { navigator.clipboard.writeText(txt); copied = true; } catch (e) {} }
+      if (copied) {
+        sb.textContent = "✓ Ссылка скопирована"; sb.classList.add("done");
+        sm.textContent = gx("Вставь её в чат {подруге|другу}: зажми поле сообщения и выбери «Вставить».");
+        setTimeout(function () { sb.textContent = label; sb.classList.remove("done"); }, 4000);
+      } else {
+        sm.textContent = gx("Скопируй ссылку и отправь {подруге|другу}: ") + shareUrl;
+      }
+      if (navigator.share) { navigator.share({ title: "Кто ты в Бацзы", text: "Кто ты в Бацзы? Введи дату рождения и узнай:", url: shareUrl }).catch(function () {}); }
     });
     a2.appendChild(sb); sh.appendChild(a2); sh.appendChild(sm);
     out.appendChild(sh);
