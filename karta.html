@@ -865,20 +865,34 @@ button.ghost, .btn.ghost { background: transparent; color: var(--gold); }
     var who = el("div", "panel");
     who.appendChild(el("h2", null, "Ты " + st.name + " <span class='han'>" + p.stem + p.branch + "</span>"));
     who.appendChild(el("p", "sub", st.el + " над " + br.ins));
-    var tm = GENDER === "m" ? TEXT_M[p.stem] : null;
+    var tm = GENDER === "m" ? TEXT_M[p.stem] : null, open = igOpen();
     if (t || tm) {
       (tm ? [["Кто ты", tm[0], 9], ["Твоя сила", tm[1], 9], ["Твоя ловушка", tm[2], 9]]
           : [["Кто ты", t.items[0][1], 3], ["Твоя сила", t.items[2][1], 2], ["Твоя ловушка", t.items[3][1], 2]]).forEach(function (it, i) {
+        if (i && !open) return;
         var s = el("div", i ? "item" : "item"); s.appendChild(el("h3", null, it[0])); s.appendChild(el("p", null, short(it[1], it[2]))); who.appendChild(s);
       });
     }
     out.appendChild(who);
 
+    /* Сила, ловушка и полный разбор открываются после подписки на Instagram (на доверии). */
+    if (!open) {
+      var lk = el("div", "panel gate");
+      lk.appendChild(el("h3", null, "Дальше твоя сила и твоя ловушка"));
+      lk.appendChild(el("p", null, "А после них полный разбор в подарок: деньги и решения, на что ты опираешься внутри, шесть советов именно для тебя. Всё это бесплатно открывается подписчикам моего Instagram."));
+      lk.appendChild(el("p", "note", "Подпишись на @maria_pantazeva и нажми «{Подписалась|Подписался}, открыть»."));
+      var la = el("div", "actions"), lf = el("a", "btn", "Подписаться в Instagram"); lf.href = INSTA_URL; lf.target = "_blank"; lf.rel = "noopener";
+      var lo = el("button", "ghost", "{Подписалась|Подписался}, открыть"); lo.type = "button";
+      lo.addEventListener("click", function () { setIgOpen(); track("подписался", { type: "Instagram (калькулятор)" }); render(y, m, d); });
+      la.appendChild(lf); la.appendChild(lo); lk.appendChild(la); out.appendChild(lk);
+    } else {
+
     var gate = el("div", "panel gate");
     gate.appendChild(el("h3", null, "Это только начало"));
-    gate.appendChild(el("p", null, "Полный разбор про тебя: деньги и решения, на что ты опираешься внутри, шесть советов именно для тебя, твоя неделя по дням и каждый месяц вперёд. Бесплатно для подписчиков моего Instagram, по твоей дате."));
-    var a1 = el("div", "actions"), l1 = el("a", "btn", "Забрать полный разбор"); l1.href = GIFT_URL + "?from=ig&d=" + ("0" + d).slice(-2) + ("0" + m).slice(-2) + y + "&g=" + GENDER; l1.target = "_blank"; l1.rel = "noopener"; a1.appendChild(l1); gate.appendChild(a1);
+    gate.appendChild(el("p", null, "Полный разбор про тебя: деньги и решения, на что ты опираешься внутри, шесть советов именно для тебя. А ещё твоя неделя по дням и каждый месяц вперёд. Бесплатно, по твоей дате."));
+    var a1 = el("div", "actions"), l1 = el("a", "btn", "Забрать полный разбор"); l1.href = GIFT_URL + "?from=ig&d=" + ("0" + d).slice(-2) + ("0" + m).slice(-2) + y + "&g=" + GENDER + "&u=1"; l1.target = "_blank"; l1.rel = "noopener"; a1.appendChild(l1); gate.appendChild(a1);
     out.appendChild(gate);
+    }
 
     var sh = el("div", "panel");
     
@@ -939,8 +953,13 @@ button.ghost, .btn.ghost { background: transparent; color: var(--gold); }
     try { if (document.referrer) { var h = new URL(document.referrer).hostname.replace(/^www\./, ""); if (h && h !== location.hostname) return h; } } catch (e) {}
     return "напрямую";
   }
+  function igOpen() { try { return localStorage.getItem("bz_ig") === "1"; } catch (e) { return false; } }
+  function setIgOpen() { try { localStorage.setItem("bz_ig", "1"); } catch (e) {} }
+  /* ?me=1 отмечает браузер Марии: её проверки не попадают в статистику. */
+  try { if (/[?&]me=1/.test(location.search)) localStorage.setItem("bz_me", "1"); } catch (e) {}
   var STAT_SRC = statSrc(), statLast = "", statSample = false;
   function track(ev, o) {
+    try { if (localStorage.getItem("bz_me") === "1") return; } catch (e) {}
     if (!STAT_URL) return;
     o = o || {}; o.ev = ev; o.calc = CALC_NAME; o.src = STAT_SRC; o.vid = statVid();
     var b = JSON.stringify(o);
