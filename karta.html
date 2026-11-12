@@ -141,7 +141,7 @@ button.ghost, .btn.ghost { background: transparent; color: var(--gold); }
 
 <script>
 (function () {
-  var CHANNEL_URL = "https://t.me/bazi_pantazeva", INSTA_URL = "https://www.instagram.com/maria_pantazeva/", SITE_URL = "https://mariapantazeva.github.io";
+  var CHANNEL_URL = "https://t.me/bazi_pantazeva", GIFT_URL = "https://kto-ty-v-bazi.netlify.app/", INSTA_URL = "https://www.instagram.com/maria_pantazeva/", SITE_URL = "https://mariapantazeva.github.io";
   /* Две двери: обычная ссылка (Инстаграм) и ссылка с #tg или ?from=tg (канал). Во втором случае подписчица уже в канале, призывов подписаться нет. */
   var TG = /[?&#]from=tg|#tg/.test(location.search + location.hash);
   var S = "甲乙丙丁戊己庚辛壬癸", B = "子丑寅卯辰巳午未申酉戌亥";
@@ -875,8 +875,8 @@ button.ghost, .btn.ghost { background: transparent; color: var(--gold); }
 
     var gate = el("div", "panel gate");
     gate.appendChild(el("h3", null, "Это только начало"));
-    gate.appendChild(el("p", null, "Полный разбор про тебя лежит в моём Telegram-канале: деньги и решения, на что ты опираешься внутри, шесть советов именно для тебя, твоя неделя по дням и каждый месяц вперёд. Бесплатно, в закрепе канала."));
-    var a1 = el("div", "actions"), l1 = el("a", "btn", "Забрать полный разбор"); l1.href = CHANNEL_URL; l1.target = "_blank"; l1.rel = "noopener"; a1.appendChild(l1); gate.appendChild(a1);
+    gate.appendChild(el("p", null, "Полный разбор про тебя: деньги и решения, на что ты опираешься внутри, шесть советов именно для тебя, твоя неделя по дням и каждый месяц вперёд. Бесплатно, откроется сразу по твоей дате."));
+    var a1 = el("div", "actions"), l1 = el("a", "btn", "Забрать полный разбор"); l1.href = GIFT_URL + "?from=ig&d=" + ("0" + d).slice(-2) + ("0" + m).slice(-2) + y + "&g=" + GENDER; l1.target = "_blank"; l1.rel = "noopener"; a1.appendChild(l1); gate.appendChild(a1);
     out.appendChild(gate);
 
     var sh = el("div", "panel");
