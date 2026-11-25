@@ -132,6 +132,7 @@ p{margin:0}
 .track::-webkit-scrollbar{display:none}
 .rev{flex:0 0 min(420px,86%);scroll-snap-align:start;background:rgba(16,10,6,.62);border:1px solid var(--line);border-radius:6px;padding:28px 26px}
 .rev p{font:italic 500 22px/1.4 var(--display);color:var(--ivory)}
+.rev.shot{padding:12px 12px 16px;align-self:flex-start}.rev.shot img{display:block;width:100%;height:auto;border-radius:4px}
 .rev small{display:block;margin-top:14px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold2)}
 .arrows{display:flex;gap:10px;justify-content:flex-end;margin-top:14px}
 .arrows button{width:46px;height:46px;border-radius:50%;border:1px solid var(--gold);background:rgba(14,9,5,.6);color:var(--gold);font-size:20px;cursor:pointer}
@@ -433,13 +434,17 @@ footer{padding:26px 0 34px;color:var(--muted);font-size:13px;text-align:center}
     <div class="wrap">
       <div class="eyebrow">Отзывы</div>
       <h2>Что говорят после разбора</h2>
+      <p class="note" style="color:var(--muted);margin-top:10px">Настоящие сообщения и комментарии клиентов.</p>
       <div class="car">
         <div class="track" id="track">
-          <div class="rev"><p>Мария, спасибо за вчерашний разговор, в процессе я многое для себя подметила. В первую очередь, что я сильно себя обесцениваю и не вижу своей ценности как человека. А на самом деле это не так.</p><small>Карина · разбор карты</small></div>
+          <div class="rev shot"><a href="img/otzyvy/tatyana.jpg" target="_blank" rel="noopener"><img src="img/otzyvy/tatyana.jpg" alt="Отзыв: личная жизнь" loading="lazy" width="800" height="704"></a><small>Консультация · личная жизнь</small></div>
+          <div class="rev shot"><a href="img/otzyvy/karina.jpg" target="_blank" rel="noopener"><img src="img/otzyvy/karina.jpg" alt="Отзыв: Карина · сессия" loading="lazy" width="800" height="1035"></a><small>Карина · сессия</small></div>
+          <div class="rev shot"><a href="img/otzyvy/diana.jpg" target="_blank" rel="noopener"><img src="img/otzyvy/diana.jpg" alt="Отзыв: Діана · разбор карты" loading="lazy" width="800" height="618"></a><small>Діана · разбор карты</small></div>
+          <div class="rev shot"><a href="img/otzyvy/ig1.jpg" target="_blank" rel="noopener"><img src="img/otzyvy/ig1.jpg" alt="Отзыв: Отзыв в Instagram · прогноз" loading="lazy" width="800" height="556"></a><small>Отзыв в Instagram · прогноз</small></div>
+          <div class="rev shot"><a href="img/otzyvy/ig2.jpg" target="_blank" rel="noopener"><img src="img/otzyvy/ig2.jpg" alt="Отзыв: Отзыв в Instagram · разбор карты и прогноз на год" loading="lazy" width="800" height="538"></a><small>Отзыв в Instagram · разбор карты и прогноз на год</small></div>
+          <div class="rev shot"><a href="img/otzyvy/ig3.jpg" target="_blank" rel="noopener"><img src="img/otzyvy/ig3.jpg" alt="Отзыв: Отзыв в Instagram · разбор карты" loading="lazy" width="800" height="525"></a><small>Отзыв в Instagram · разбор карты</small></div>
           <div class="rev"><p>Это очень большая информация для переваривания, я тебе благодарна, я не знаю как. Короче, я тебя всем своим подружкам рекомендовала.</p><small>Разбор карты</small></div>
-          <div class="rev"><p>Ти завжди вмієш повернути до життя людину серйозно. Дуже екологічно і гарно ти це робиш. Мене двічі промурашило від того, що ти сказала про перехід.</p><small>Діана · разбор карты</small></div>
           <div class="rev"><p>Ты мне тогда сделала такой крутой прогноз, что это просто какая-то волшебная песня. Так что я тебе тоже очень благодарна.</p><small>Прогноз</small></div>
-          <div class="rev"><p>Я вчера целый день переваривала всё, что ты мне сказала. Офигенно.</p><small>Разбор</small></div>
         </div>
         <div class="arrows"><button type="button" id="prev" aria-label="Предыдущий отзыв">←</button><button type="button" id="next" aria-label="Следующий отзыв">→</button></div>
       </div>
